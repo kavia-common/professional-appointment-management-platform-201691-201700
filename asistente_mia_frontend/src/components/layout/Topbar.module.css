@@ -1,0 +1,74 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.left {
+  min-width: 0;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.12);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.userMeta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.userName {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.userRole {
+  font-size: 12px;
+  color: var(--muted);
+}
