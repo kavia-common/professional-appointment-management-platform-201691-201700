@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
 import Table from "../components/ui/Table";
@@ -17,24 +17,31 @@ export default function UsuariosPage() {
     tags: ""
   });
 
-  async function load() {
+  const load = useCallback(async () => {
     setState({ status: "loading", data: [], error: null });
     try {
       const data = await api.listUsers();
-      setState({ status: "success", data: Array.isArray(data) ? data : [], error: null });
+      setState({
+        status: "success",
+        data: Array.isArray(data) ? data : [],
+        error: null
+      });
     } catch (e) {
       const fallback = [
         { id: "u-1", name: "María López", phone: "+34 600 000 001", tags: ["vip"] },
         { id: "u-2", name: "Carlos Pérez", phone: "+34 600 000 002", tags: ["nuevo"] }
       ];
-      setState({ status: "error", data: fallback, error: e?.message || "No se pudo cargar" });
+      setState({
+        status: "error",
+        data: fallback,
+        error: e?.message || "No se pudo cargar"
+      });
     }
-  }
+  }, []);
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [load]);
 
   const columns = useMemo(
     () => [
@@ -56,7 +63,11 @@ export default function UsuariosPage() {
                 await api.deleteUser(r.id);
                 await load();
               } catch (e) {
-                setState((s) => ({ ...s, status: "error", error: e?.message || "No se pudo eliminar" }));
+                setState((s) => ({
+                  ...s,
+                  status: "error",
+                  error: e?.message || "No se pudo eliminar"
+                }));
               }
             }}
             ariaLabel={`Eliminar ${r.name}`}
@@ -66,8 +77,7 @@ export default function UsuariosPage() {
         )
       }
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [load]
   );
 
   async function onCreate() {
@@ -88,7 +98,11 @@ export default function UsuariosPage() {
       setForm({ name: "", phone: "", tags: "" });
       await load();
     } catch (e) {
-      setState((s) => ({ ...s, status: "error", error: e?.message || "Error al crear usuario" }));
+      setState((s) => ({
+        ...s,
+        status: "error",
+        error: e?.message || "Error al crear usuario"
+      }));
     } finally {
       setSaving(false);
     }
@@ -106,7 +120,11 @@ export default function UsuariosPage() {
         }
       >
         {state.error && <div className="helperText">Aviso: {String(state.error)}</div>}
-        <Table columns={columns} rows={state.data} emptyLabel={state.status === "loading" ? "Cargando…" : "Sin usuarios"} />
+        <Table
+          columns={columns}
+          rows={state.data}
+          emptyLabel={state.status === "loading" ? "Cargando…" : "Sin usuarios"}
+        />
       </Card>
 
       <Modal
@@ -126,15 +144,27 @@ export default function UsuariosPage() {
       >
         <FormRow>
           <Field label="Nombre">
-            <TextInput value={form.name} onChange={(v) => setForm((f) => ({ ...f, name: v }))} placeholder="Nombre y apellidos" />
+            <TextInput
+              value={form.name}
+              onChange={(v) => setForm((f) => ({ ...f, name: v }))}
+              placeholder="Nombre y apellidos"
+            />
           </Field>
           <Field label="WhatsApp" hint="Incluye código país">
-            <TextInput value={form.phone} onChange={(v) => setForm((f) => ({ ...f, phone: v }))} placeholder="+34 600 000 000" />
+            <TextInput
+              value={form.phone}
+              onChange={(v) => setForm((f) => ({ ...f, phone: v }))}
+              placeholder="+34 600 000 000"
+            />
           </Field>
         </FormRow>
 
         <Field label="Etiquetas" hint="Separadas por coma (opcional)">
-          <TextInput value={form.tags} onChange={(v) => setForm((f) => ({ ...f, tags: v }))} placeholder="vip, nuevo, seguimiento" />
+          <TextInput
+            value={form.tags}
+            onChange={(v) => setForm((f) => ({ ...f, tags: v }))}
+            placeholder="vip, nuevo, seguimiento"
+          />
         </Field>
 
         <div className="helperText">
